@@ -13,6 +13,8 @@ contract Pool {
     }
 
     function sell(uint256 tokens) public{
+        require(balances[msg.sender] >= tokens, "Insufficient token balance to sell");
+
         totalSupply -= tokens;
 
         uint256 balance = balances[msg.sender];
@@ -62,4 +64,6 @@ contract Pool {
         uint256 temp = (totalSupply * totalSupply)/1e36; // y = mx^2
         return newSlope * temp / 1e18;
     }
+
+    receive() external payable {}
 }
