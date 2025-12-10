@@ -1,57 +1,58 @@
-# Sample Hardhat 3 Beta Project (`mocha` and `ethers`)
+# Market Maker — Experimental Bonding Curve Token
 
-This project showcases a Hardhat 3 Beta project using `mocha` for tests and the `ethers` library for Ethereum interactions.
+This project implements a simple **on-chain market maker** using a quadratic bonding curve.  
+The contract mints tokens on buys, burns tokens on sells, and adjusts price based on total supply.
 
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+> **Note:** This is an experimental model intended for learning.  
+> It is *not* a production-ready AMM.
 
-## Project Overview
+---
 
-This example project includes:
+## How It Works
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using `mocha` and ethers.js
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+### **Buy**
 
-## Usage
+- User sends ETH → contract mints tokens.
+- Token price follows a quadratic curve:
+  \[
+  P(x) = m \cdot x^2
+  \]
+- Minted tokens use 18-decimal fixed-point math.
 
-### Running Tests
+### **Sell**
 
-To run all the tests in the project, execute the following command:
+- User burns tokens → contract returns ETH.
+- Sell pricing uses a discounted slope (0.3) to discourage early pump-and-dump.
+- Refund is based on the **post-burn** supply.
 
-```shell
+---
+
+## Contract Features
+
+- ERC-20 token (`POOL`)
+- Quadratic price function for buys
+- Discounted price function for sells
+- ETH-backed reserve (contract balance)
+- Fully on-chain mint/burn mechanics
+
+---
+
+## Running the Project
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+## Compile
+
+```bash
+npx hardhat compile
+```
+
+Run tests:
+
+```bash
 npx hardhat test
-```
-
-You can also selectively run the Solidity or `mocha` tests:
-
-```shell
-npx hardhat test solidity
-npx hardhat test mocha
-```
-
-### Make a deployment to Sepolia
-
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
-
-To run the deployment to a local chain:
-
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
-```
-
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
-
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
-
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
-
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
-```
-
-After setting the variable, you can run the deployment with the Sepolia network:
-
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
 ```
