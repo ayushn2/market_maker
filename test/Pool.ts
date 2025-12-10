@@ -28,7 +28,7 @@ describe("Pool", () => {
 
         await pool.buy({ value: ethers.parseEther("2.0") });
 
-        const balance = await pool.balances(owner.address);
+        const balance = await pool.balanceOf(owner.address);
         console.log("Owner's token balance after purchase:", ethers.formatUnits(balance, 18));
         expect(balance).to.be.gt(0);
 
@@ -58,7 +58,7 @@ describe("Pool", () => {
 
         console.log("ETH received from selling:", ethers.formatEther(ethReceived));
         
-        const finalBalance = await pool.balances(owner.address);
+        const finalBalance = await pool.balanceOf(owner.address);
         console.log("Owner's token balance after selling:", ethers.formatUnits(finalBalance, 18));
         expect(finalBalance).to.equal(0);
 
